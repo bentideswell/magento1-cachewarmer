@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Fishpig_CacheWarmer>
+			<version>1.1.0.9</version>
+		</Fishpig_CacheWarmer>
+	</modules>
+	<global>
+		<helpers>
+			<cachewarmer>
+				<class>Fishpig_CacheWarmer_Helper</class>
+			</cachewarmer>
+		</helpers>
+		<models>
+			<cachewarmer>
+				<class>Fishpig_CacheWarmer_Model</class>
+			</cachewarmer>
+		</models>
+	</global>
+	<default>
+		<cachewarmer>
+			<settings>
+				<enabled>1</enabled>
+				<run_from_browser>1</run_from_browser>
+				<sources>catalog_product,catalog_category,cms_pages,wordpress,custom</sources>
+				<useragent>ua_default,ua_mobile,ua_tablet</useragent>
+				<currency_codes_all>1</currency_codes_all>
+			</settings>
+		</cachewarmer>
+	</default>
+	<fishpig>
+		<injection>
+			<Fishpig_Magento_License>
+				<Fishpig_CacheWarmer>
+					<Helper_License>
+						<ignore />
+					</Helper_License>
+				</Fishpig_CacheWarmer>
+			</Fishpig_Magento_License>
+		</injection>
+		<encode>
+			<helper_license>app/code/community/Fishpig/CacheWarmer/Helper/License.php</helper_license>
+			<helper_data>app/code/community/Fishpig/CacheWarmer/Helper/Data.php</helper_data>
+		</encode>
+	</fishpig>
+</config>

@@ -1,0 +1,41 @@
+/**
+ * @category Fishpig
+ * @package Fishpig_CacheWarmer
+ * @license http://fishpig.co.uk/license.txt
+ * @author Ben Tideswell <ben@fishpig.co.uk>
+ */
+
+CHANGELOG
+
+- 25/05/2017 - v1.1.0.8
+- Improved URL generation routine. If Configuration > Catalog > SEO > Use Categories Path for Product URLs is disabled, product/category URL combinations won't be warmed. There is also better checking for product visibility so that only visible (and enabled) products are warmed.
+
+- 23/05/2017 - v1.1.0.6
+- Fixed issue that caused no product or category URLs to be crawled.
+
+- 02/11/2016 - v1.1.0.5
+- Fixed issue with products not always being included in the collection of URLs to be warmed.
+
+- 03/05/2016 - v1.1.0.4
+- Added event (cachewarmer_add_urls) so that you can add in your own URLs to the Cache Warmer via a custom module. See the following URL for details on how to do this: fishpig.co.uk/magento/extensions/full-page-cache-warmer/extend-with-custom-urls/
+
+- 07/09/2015 - v1.1.0.3
+- Fixed issue with multi-currency warming.
+
+- 30/09/2015 - v1.1.0.1
+- Added currencies to cache warming. Also improved the output when accessing via a browser.
+
+- 04/09/2015 - v1.1.0.0
+- Added licensing to the extension.
+
+- 01/09/2015 - v1.0.1.0
+- Added parallel CURL requests to make warming the cache even quicker.
+
+- 23/08/2015 - v1.0.0.9
+- Modified CURL requests to use keep alives, which makes the cache warming process quicker.
+
+- 13/07/2015 - v1.0.0.8
+- Fixed issue that caused homepage HTML to be displayed before a list of links that have been crawled. Also improved the way URLs are generated for warming, making the extension slightly more efficient.
+
+- 13/07/2015 - v1.0.0.7
+- Added option to enable/disable running the shell/cachewarmer.php script from the browser. This configuration is enabled by default. When disabled, the script can still be run via SSH.

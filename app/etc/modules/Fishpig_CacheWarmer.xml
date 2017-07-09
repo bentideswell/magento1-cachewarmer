@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config>
+	<modules>
+		<Fishpig_CacheWarmer>
+			<active>true</active>
+			<codePool>community</codePool>
+		</Fishpig_CacheWarmer>
+	</modules>
+</config>
