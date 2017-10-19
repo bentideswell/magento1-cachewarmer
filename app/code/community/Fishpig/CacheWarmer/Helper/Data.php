@@ -160,7 +160,27 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 		if (!$visibilityAttribute->getId() || !$statusAttribute->getId()) {
 			return array();
 		}
+		
+		if (!($selectedVisibilities = Mage::getStoreConfig('cachewarmer/settings/catalog_product_visibility'))) {
+			return array();
+		}
 
+		$selectedVisibilities = explode(',', $selectedVisibilities);
+		
+		foreach($selectedVisibilities as $key => $value) {
+			if ((int)$value === 0) {
+				unset($selectedVisibilities[$key]);
+			}
+			else {
+				$selectedVisibilities[$key] = (int)$value;
+			}
+		}
+		
+		if (!$selectedVisibilities) {
+			return array();
+		}
+
+		
 		$urlRewrites = Mage::getResourceModel('core/url_rewrite_collection')
 			->removeAllFieldsFromSelect()
 			->addFieldToSelect('request_path')
@@ -179,7 +199,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 		// Ensure only visible products are returned
 		$urlRewrites->getSelect()->distinct()->join(
 			array('_visibility' => $visibilityAttribute->getBackendTable()),
-			'_visibility.entity_id = main_table.product_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . Mage_Catalog_Model_Product_Visibility::VISIBILITY_IN_CATALOG . ', ' . Mage_Catalog_Model_Product_Visibility::VISIBILITY_BOTH . ')',
+			'_visibility.entity_id = main_table.product_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
 			null
 		);
 
@@ -190,6 +210,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			null
 		);
 
+echo count($this->_getReadAdapter()->fetchCol($urlRewrites->getSelect()));exit;
 		return $this->_getReadAdapter()->fetchCol($urlRewrites->getSelect());
 	}
 	

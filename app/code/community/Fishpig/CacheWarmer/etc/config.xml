@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Fishpig_CacheWarmer>
-			<version>1.1.0.9</version>
+			<version>1.1.0.10</version>
 		</Fishpig_CacheWarmer>
 	</modules>
 	<global>
@@ -25,6 +25,7 @@
 				<sources>catalog_product,catalog_category,cms_pages,wordpress,custom</sources>
 				<useragent>ua_default,ua_mobile,ua_tablet</useragent>
 				<currency_codes_all>1</currency_codes_all>
+				<catalog_product_visibility>2,4</catalog_product_visibility>
 			</settings>
 		</cachewarmer>
 	</default>
