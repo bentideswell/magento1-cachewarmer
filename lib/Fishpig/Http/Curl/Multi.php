@@ -128,7 +128,7 @@ class Fishpig_Http_Curl_Multi
 		}
 
 		curl_multi_close($mh);
-
+		
 		return $this->storeResponses() ? $this->_results : false;
 	 }
 
@@ -280,7 +280,7 @@ class Fishpig_Http_Curl_Multi
 			return $this->_cookieFile;
 		}
 
-		$this->_cookieFile = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR . 'var' . DIRECTORY_SEPARATOR . rand(1111, 9999) . '-cachewarmer.cookie';		
+		$this->_cookieFile = Mage::getBaseDir('var') . DIRECTORY_SEPARATOR . rand(1111, 9999) . '-cachewarmer.cookie';		
 
 		return $this->_cookieFile;
 	}

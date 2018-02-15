@@ -2,7 +2,7 @@
 <config>
 	<modules>
 		<Fishpig_CacheWarmer>
-			<version>1.1.0.10</version>
+			<version>1.1.0.12</version>
 		</Fishpig_CacheWarmer>
 	</modules>
 	<global>
@@ -26,6 +26,7 @@
 				<useragent>ua_default,ua_mobile,ua_tablet</useragent>
 				<currency_codes_all>1</currency_codes_all>
 				<catalog_product_visibility>2,4</catalog_product_visibility>
+				<curl_multi_threads>10</curl_multi_threads>
 			</settings>
 		</cachewarmer>
 	</default>

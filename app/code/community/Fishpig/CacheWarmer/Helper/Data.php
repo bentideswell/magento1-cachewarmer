@@ -56,7 +56,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 
 			$cm->storeResponses(true);
 
-			$results = $cm->process($this->_getUrlsForWarming(), 10);
+			$results = $cm->process($this->_getUrlsForWarming(), $this->_getCurlMultiThreadCount());
 			
 			Mage::getSingleton('core/app_emulation')->stopEnvironmentEmulation($initialEnvironmentInfo);
 
@@ -210,7 +210,6 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			null
 		);
 
-echo count($this->_getReadAdapter()->fetchCol($urlRewrites->getSelect()));exit;
 		return $this->_getReadAdapter()->fetchCol($urlRewrites->getSelect());
 	}
 	
@@ -483,5 +482,48 @@ echo count($this->_getReadAdapter()->fetchCol($urlRewrites->getSelect()));exit;
 		}
 
 		return $this->_currencyCodes[$storeId];
+	}
+	
+	/*
+	 * Get the number of threads to use in CURL
+	 *
+	 * @return int
+	 */
+	protected function _getCurlMultiThreadCount()
+	{
+		$default = 10;
+		$max = 50;
+		$count = (int)Mage::getStoreConfig('cachewarmer/settings/curl_multi_threads');
+
+		if ($count <= 0) {
+			$count = $default;
+		}
+		else if ($count > $max) {
+			$count = $max;
+		}
+		
+		return $count;
+	}
+	
+	/*
+	 * Clean up cookie files
+	 *
+	 * @return $this
+	 */
+	public function cleanUp()
+	{
+		$varDir = Mage::getBaseDir('var');
+		
+		if (is_dir($varDir)) {
+			if ($files = @scandir($varDir)) {
+				foreach($files as $file) {
+					if (strpos($file, 'cachewarmer.cookie') !== false) {
+						unlink($varDir . DIRECTORY_SEPARATOR . $file);
+					}
+				}
+			}
+		}
+
+		return $this;
 	}
 }

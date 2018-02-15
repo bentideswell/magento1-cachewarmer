@@ -1,5 +1,5 @@
 <_>
-   <form_key>8Ar4SZVPRQOnMhyT</form_key>
+   <form_key>d64o4P5KH5PIN0X8</form_key>
    <name>Fishpig_CacheWarmer</name>
    <channel>community</channel>
    <version_ids>
@@ -10,7 +10,7 @@
    <description>Warms up a full page cache.</description>
    <license>FishPig EULA</license>
    <license_uri>http://fishpig.co.uk/license.txt</license_uri>
-   <version>1.1.0.10</version>
+   <version>1.1.0.12</version>
    <stability>stable</stability>
    <notes>For changes, please see https://fishpig.co.uk/magento/extensions/full-page-cache-warmer/#chagelog</notes>
    <authors>
@@ -41,7 +41,7 @@
             <max/>
          </max>
          <files>
-            <files>                        </files>
+            <files>                          </files>
          </files>
       </package>
       <extension>

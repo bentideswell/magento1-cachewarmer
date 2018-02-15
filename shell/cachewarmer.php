@@ -49,6 +49,8 @@
 		Mage::helper('cachewarmer')->setDisplayOutput(
 			true
 		)->run();
+		
+		Mage::helper('cachewarmer')->cleanUp();
 	}
 	catch (Exception $e) {
 		echo $e->getMessage() . (PHP_SAPI === 'cli' ? "\n" : '<br/>');

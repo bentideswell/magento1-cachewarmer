@@ -30,6 +30,8 @@
 		}
 		
 		echo "# Warming for all stores complete.\n\n";
+		
+		Mage::helper('cachewarmer')->cleanUp();
 	}
 	catch (Exception $e) {
 		echo "\n\nEXCEPTION: " . $e->getMessage() . "\n\n";

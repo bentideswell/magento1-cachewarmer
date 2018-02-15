@@ -98,6 +98,15 @@
         				<show_in_store>1</show_in_store>
         				<depends><sources>catalog_product</sources></depends>
         			</catalog_product_visibility>
+        			<curl_multi_threads>
+        				<label>CURL Threads</label>
+        				<comment>The number of URLs requested at the same time. Max is 50. Default is 10.</comment>
+								<frontend_type>text</frontend_type>
+        				<sort_order>40</sort_order>
+        				<show_in_default>1</show_in_default>
+        				<show_in_website>1</show_in_website>
+        				<show_in_store>1</show_in_store>
+        			</curl_multi_threads>
         		</fields>
         	</settings>
         </groups>
