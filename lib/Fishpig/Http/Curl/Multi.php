@@ -4,6 +4,7 @@
  * @package     Fishpig_Crawler
  * @license     http://fishpig.co.uk/license.txt
  * @author      Ben Tideswell <help@fishpig.co.uk>
+ * @SkipObfuscation
  */
 
 class Fishpig_Http_Curl_Multi

@@ -179,36 +179,59 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 		if (!$selectedVisibilities) {
 			return array();
 		}
+		
+		if ($this->_isEnterprise()) {
+			$urlRewrites = Mage::getResourceModel('enterprise_urlrewrite/url_rewrite_collection')
+				->removeAllFieldsFromSelect()
+				->addFieldToSelect('request_path')
+				->removeFieldFromSelect('url_rewrite_id')
+				->addFieldToFilter('main_table.value_id', array('notnull' => true))
+				->addFieldToFilter('main_table.target_path', array('like' => 'catalog/product/%'));
 
-		
-		$urlRewrites = Mage::getResourceModel('core/url_rewrite_collection')
-			->removeAllFieldsFromSelect()
-			->addFieldToSelect('request_path')
-			->removeFieldFromSelect('url_rewrite_id')
-			->addFieldToFilter('main_table.store_id', Mage::app()->getStore()->getId())
-			->addFieldToFilter('product_id', array('notnull' => true));
-			
-		// Ensure there are no options set
-		$urlRewrites->getSelect()->where('main_table.options IS NULL OR main_table.options = ?', '');
-		
-		// Don't include category path URLs
-		if (!Mage::getStoreConfigFlag('catalog/seo/product_use_categories')) {
-			$urlRewrites->getSelect()->where('main_table.category_id IS NULL OR main_table.category_id = ?', '');
+			// Ensure only visible products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_visibility' => $visibilityAttribute->getBackendTable()),
+				'_visibility.entity_id = main_table.value_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
+				null
+			);
+	
+			// Ensure only Enabled products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_status' => $statusAttribute->getBackendTable()),
+				'_status.entity_id = main_table.value_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
+				null
+			);
 		}
-		
-		// Ensure only visible products are returned
-		$urlRewrites->getSelect()->distinct()->join(
-			array('_visibility' => $visibilityAttribute->getBackendTable()),
-			'_visibility.entity_id = main_table.product_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
-			null
-		);
-
-		// Ensure only Enabled products are returned
-		$urlRewrites->getSelect()->distinct()->join(
-			array('_status' => $statusAttribute->getBackendTable()),
-			'_status.entity_id = main_table.product_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
-			null
-		);
+		else {
+			$urlRewrites = Mage::getResourceModel('core/url_rewrite_collection')
+				->removeAllFieldsFromSelect()
+				->addFieldToSelect('request_path')
+				->removeFieldFromSelect('url_rewrite_id')
+				->addFieldToFilter('main_table.store_id', Mage::app()->getStore()->getId())
+				->addFieldToFilter('product_id', array('notnull' => true));
+				
+			// Ensure there are no options set
+			$urlRewrites->getSelect()->where('main_table.options IS NULL OR main_table.options = ?', '');
+			
+			// Don't include category path URLs
+			if (!Mage::getStoreConfigFlag('catalog/seo/product_use_categories')) {
+				$urlRewrites->getSelect()->where('main_table.category_id IS NULL OR main_table.category_id = ?', '');
+			}
+			
+			// Ensure only visible products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_visibility' => $visibilityAttribute->getBackendTable()),
+				'_visibility.entity_id = main_table.product_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
+				null
+			);
+	
+			// Ensure only Enabled products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_status' => $statusAttribute->getBackendTable()),
+				'_status.entity_id = main_table.product_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
+				null
+			);
+		}
 
 		return $this->_getReadAdapter()->fetchCol($urlRewrites->getSelect());
 	}
@@ -230,24 +253,40 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			return array();
 		}
 
-		$urlRewrites = Mage::getResourceModel('core/url_rewrite_collection')
-			->removeAllFieldsFromSelect()
-			->addFieldToSelect('request_path')
-			->removeFieldFromSelect('url_rewrite_id')
-			->addFieldToFilter('category_id', array('notnull' => true))
-			->addFieldToFilter('product_id', array('null' => true))
-#			->addFieldToFilter('options', array('null' => true))
-			->addFieldToFilter('main_table.store_id', Mage::app()->getStore()->getId());
+		if ($this->_isEnterprise()) {
+			$urlRewrites = Mage::getResourceModel('enterprise_urlrewrite/url_rewrite_collection')
+				->removeAllFieldsFromSelect()
+				->addFieldToSelect('request_path')
+				->removeFieldFromSelect('url_rewrite_id')
+				->addFieldToFilter('main_table.target_path', array('like' => 'catalog/category/%'));
+
+			// Ensure only visible products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_visibility' => $isActiveAttribute->getBackendTable()),
+				'_visibility.entity_id = main_table.value_id AND _visibility.attribute_id=' . $isActiveAttribute->getId() . ' AND _visibility.store_id=0 AND _visibility.value = 1',
+				null
+			);
+		}
+		else {
+			$urlRewrites = Mage::getResourceModel('core/url_rewrite_collection')
+				->removeAllFieldsFromSelect()
+				->addFieldToSelect('request_path')
+				->removeFieldFromSelect('url_rewrite_id')
+				->addFieldToFilter('category_id', array('notnull' => true))
+				->addFieldToFilter('product_id', array('null' => true))
+	#			->addFieldToFilter('options', array('null' => true))
+				->addFieldToFilter('main_table.store_id', Mage::app()->getStore()->getId());
+				
+			// Ensure there are no options set
+			$urlRewrites->getSelect()->where('main_table.options IS NULL OR main_table.options = ?', '');
 			
-		// Ensure there are no options set
-		$urlRewrites->getSelect()->where('main_table.options IS NULL OR main_table.options = ?', '');
-		
-		// Ensure only visible products are returned
-		$urlRewrites->getSelect()->distinct()->join(
-			array('_visibility' => $isActiveAttribute->getBackendTable()),
-			'_visibility.entity_id = main_table.category_id AND _visibility.attribute_id=' . $isActiveAttribute->getId() . ' AND _visibility.store_id=0 AND _visibility.value = 1',
-			null
-		);
+			// Ensure only visible products are returned
+			$urlRewrites->getSelect()->distinct()->join(
+				array('_visibility' => $isActiveAttribute->getBackendTable()),
+				'_visibility.entity_id = main_table.category_id AND _visibility.attribute_id=' . $isActiveAttribute->getId() . ' AND _visibility.store_id=0 AND _visibility.value = 1',
+				null
+			);
+		}
 
 		return $this->_getReadAdapter()->fetchCol($urlRewrites->getSelect());
 	}
@@ -525,5 +564,15 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 		}
 
 		return $this;
+	}
+	
+	/*
+	 *
+	 *
+	 * @return bool
+	 */	
+	protected function _isEnterprise()
+	{
+		return Mage::getEdition() === Mage::EDITION_ENTERPRISE;
 	}
 }

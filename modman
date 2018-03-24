@@ -1,6 +1,5 @@
 app/code/community/Fishpig/CacheWarmer		app/code/community/Fishpig/CacheWarmer
 app/etc/modules/Fishpig_CacheWarmer.xml		app/etc/modules/Fishpig_CacheWarmer.xml
 shell/cachewarmer-all.php									shell/cachewarmer-all.php
-shell/cachewarmer.php										shell/cachewarmer.php
-var/connect/Fishpig_CacheWarmer.xml				var/connect/Fishpig_CacheWarmer.xml
-lib/Fishpig/Http/Curl/Multi.php							lib/Fishpig/Http/Curl/Multi.php
+shell/cachewarmer.php											shell/cachewarmer.php
+lib/Fishpig/Http/Curl/Multi.php						lib/Fishpig/Http/Curl/Multi.php

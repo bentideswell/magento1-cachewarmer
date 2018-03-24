@@ -1,6 +1,7 @@
 <?php
 /*
  *
+ * @SkipObfuscation
  */
 class Fishpig_CacheWarmer_Model_System_Config_Source_Catalog_Product_Visibility extends Mage_Catalog_Model_Product_Visibility
 {
