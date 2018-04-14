@@ -1,11 +1,14 @@
 /**
  * @category Fishpig
- * @package Fishpig_CacheWarmer
- * @license https://fishpig.co.uk/license.txt
- * @author Ben Tideswell <ben@fishpig.co.uk>
+ * @package  Fishpig_CacheWarmer
+ * @license  https://fishpig.co.uk/license.txt
+ * @author   Ben Tideswell <ben@fishpig.co.uk>
  */
 
 CHANGELOG
+
+- 14/04/2018 - 1.1.1.1
+- Added support for EE.
 
 - 15/01/2018 - v1.1.0.12
 - Added option to change number of CURL threads.

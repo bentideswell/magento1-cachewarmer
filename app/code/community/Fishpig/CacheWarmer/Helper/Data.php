@@ -191,14 +191,14 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			// Ensure only visible products are returned
 			$urlRewrites->getSelect()->distinct()->join(
 				array('_visibility' => $visibilityAttribute->getBackendTable()),
-				'_visibility.entity_id = main_table.value_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
+				'SUBSTRING(main_table.target_path, 25) = _visibility.entity_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
 				null
 			);
 	
 			// Ensure only Enabled products are returned
 			$urlRewrites->getSelect()->distinct()->join(
 				array('_status' => $statusAttribute->getBackendTable()),
-				'_status.entity_id = main_table.value_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
+				'SUBSTRING(main_table.target_path, 25) =  _status.entity_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
 				null
 			);
 		}
