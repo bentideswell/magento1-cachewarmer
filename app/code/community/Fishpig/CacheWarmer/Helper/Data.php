@@ -30,6 +30,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	public function run($storeId = null)
 	{
+
 		$this->_init();
 		
 		if ($storeId === null) {
@@ -63,6 +64,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			return $this;
 		}
 		catch (Exception $e) {
+			exit($e);
 			Mage::getSingleton('core/app_emulation')->stopEnvironmentEmulation($initialEnvironmentInfo);
 			
 			throw $e;
@@ -91,6 +93,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 		$allUrls = array();
 
 		foreach($urlFunctions as $urlFunction) {
+
 			if ($urls = call_user_func(array($this, $urlFunction))) {
 				foreach($urls as $url) {
 					if (!trim($url)) {
@@ -112,7 +115,7 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 				}
 			}
 		}
-		
+
 		if (($currencies = $this->getCurrencyCodes()) !== false) {
 			if (count($currencies) > 1) {
 				$allUrlCopy = $allUrls;
@@ -180,25 +183,38 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			return array();
 		}
 		
+		$storeId   = (int)Mage::app()->getStore()->getId();
+		$websiteId = (int)Mage::app()->getStore()->getWebsiteId();
+
 		if ($this->_isEnterprise()) {
+			$productIdSql = 'SUBSTRING(main_table.target_path, 25)';
+			
 			$urlRewrites = Mage::getResourceModel('enterprise_urlrewrite/url_rewrite_collection')
 				->removeAllFieldsFromSelect()
 				->addFieldToSelect('request_path')
 				->removeFieldFromSelect('url_rewrite_id')
 				->addFieldToFilter('main_table.value_id', array('notnull' => true))
-				->addFieldToFilter('main_table.target_path', array('like' => 'catalog/product/%'));
+				->addFieldToFilter('main_table.target_path', array('like' => 'catalog/product/%'))
+				->addFieldToFilter('main_table.store_id', array('in' => array(0, Mage::app()->getStore()->getId())));
+
+		$urlRewrites->getSelect()
+			->join(
+				array('pwebsite' => Mage::getSingleton('core/resource')->getTableName('catalog_product_website')),
+				'pwebsite.website_id = ' . $websiteId . ' AND pwebsite.product_id = ' . $productIdSql,
+				null
+			);
 
 			// Ensure only visible products are returned
 			$urlRewrites->getSelect()->distinct()->join(
 				array('_visibility' => $visibilityAttribute->getBackendTable()),
-				'SUBSTRING(main_table.target_path, 25) = _visibility.entity_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
+				$productIdSql . ' = _visibility.entity_id AND _visibility.attribute_id=' . (int)$visibilityAttribute->getId() . ' AND _visibility.store_id IN (0, ' . Mage::app()->getStore()->getId() . ') AND _visibility.value IN (' . implode(', ', $selectedVisibilities) . ')',
 				null
 			);
 	
 			// Ensure only Enabled products are returned
 			$urlRewrites->getSelect()->distinct()->join(
 				array('_status' => $statusAttribute->getBackendTable()),
-				'SUBSTRING(main_table.target_path, 25) =  _status.entity_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
+				$productIdSql . ' =  _status.entity_id AND _status.attribute_id=' . (int)$statusAttribute->getId() . ' AND _status.store_id IN (0, ' . (int)Mage::app()->getStore()->getId() . ') AND _status.value = 1',
 				null
 			);
 		}
@@ -332,22 +348,17 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 
 		$urls = array();
 
-		try {
-			$posts = Mage::getResourceModel('wordpress/post_collection')
-				->addIsPublishedFilter()
-				->addPostTypeFilter(array_keys(Mage::helper('wordpress/app')->init()->getPostTypes()))
-				->load();
+		$posts = Mage::getResourceModel('wordpress/post_collection')
+			->addIsPublishedFilter()
+			->addPostTypeFilter(array_keys(Mage::helper('wordpress/app')->init()->getPostTypes()))
+			->load();
 
-			if (count($posts) > 0) {
-				foreach($posts as $post) {
-					$urls[] = $post->getPermalink();
-				}
+		if (count($posts) > 0) {
+			foreach($posts as $post) {
+				$urls[] = $post->getPermalink();
 			}
 		}
-		catch (Exception $e) {
-			Mage::logException($e);
-		}
-		
+
 		return $urls;
 	}
 	

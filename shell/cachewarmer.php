@@ -25,6 +25,7 @@ if (isset($_GET['type'])) {
 $dirsToTry = array(
 	dirname(__DIR__),
 	getcwd(),
+	dirname(dirname(dirname(dirname(__FILE__)))),
 );
 
 $mageReady = false;
@@ -38,12 +39,12 @@ foreach($dirsToTry as $dirToTry) {
 		$mageReady = true;
 	}
 }
-	
+
 try {
 	if (!$mageReady) {
 		throw new Exception('Unable to find Mage.php');
 	}
-	
+
 	Mage::app($runCode, $runType);
 	umask(0);
 
