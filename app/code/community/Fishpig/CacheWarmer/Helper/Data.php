@@ -64,7 +64,6 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			return $this;
 		}
 		catch (Exception $e) {
-			exit($e);
 			Mage::getSingleton('core/app_emulation')->stopEnvironmentEmulation($initialEnvironmentInfo);
 			
 			throw $e;
