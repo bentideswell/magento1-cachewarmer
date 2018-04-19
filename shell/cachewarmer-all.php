@@ -40,7 +40,7 @@ try {
 	$it = 1;
 	
 	foreach($stores as $store) {
-		if ((int)$store->getId() > 0) {
+		if ((int)$store->getId() > 0 && (int)$store->getIsActive() === 1) {
 			echo sprintf("# Warming store %d/%d (%s).                                  \r", $it++, count($stores), $store->getName());
 
 			system(sprintf('php -f %s/cachewarmer.php store %s', __DIR__, $store->getCode()));
