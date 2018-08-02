@@ -138,6 +138,10 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 	 */
 	protected function _getInitUrls()
 	{
+		if (!Fishpig_CacheWarmer_Model_System_Config_Source_Url_Sources::isSourceEnabled('store_init')) {
+			return array();
+		}
+
 		return array(
 			$this->_getBaseUrl() . '?___store=' . Mage::app()->getStore()->getCode()
 		);

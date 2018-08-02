@@ -30,6 +30,7 @@ class Fishpig_CacheWarmer_Model_System_Config_Source_Url_Sources
 		$_helper = Mage::helper('cachewarmer');
 		
 		return array(
+			'store_init' => $_helper->__('Store Initialization'),
 			'catalog_product' => $_helper->__('Products'),
 			'catalog_category' => $_helper->__('Categories'),
 			'cms_pages' => $_helper->__('CMS Pages'),

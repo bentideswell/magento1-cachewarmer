@@ -7,6 +7,9 @@
 
 CHANGELOG
 
+- 02/08/2018 - 1.1.1.6
+- Added option to remove store code URLs (Store Initialization)
+
 - 14/04/2018 - 1.1.1.1
 - Added support for EE.
 
