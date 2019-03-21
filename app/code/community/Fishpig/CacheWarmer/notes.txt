@@ -7,6 +7,9 @@
 
 CHANGELOG
 
+- 21/03/2019 - 1.1.1.7
+- Added fix for incorrectly configured WordPress blogs.
+
 - 02/08/2018 - 1.1.1.6
 - Added option to remove store code URLs (Store Initialization)
 

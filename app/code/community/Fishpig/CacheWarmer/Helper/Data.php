@@ -370,6 +370,10 @@ class Fishpig_CacheWarmer_Helper_Data extends Mage_Core_Helper_Abstract
 			return array();
 		}
 
+		if (!Mage::helper('wordpress/app')->init()->getDbConnection()) {
+			return array();
+		}
+
 		$urls = array();
 
 		$posts = Mage::getResourceModel('wordpress/post_collection')
